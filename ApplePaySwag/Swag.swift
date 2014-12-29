@@ -24,6 +24,7 @@ func ==(lhs: SwagType, rhs: SwagType) -> Bool {
     }
 }
 
+let shippingPrice: NSDecimalNumber = NSDecimalNumber(string: "5.0")
 struct Swag {
     let image: UIImage?
     let title: String
@@ -44,5 +45,13 @@ struct Swag {
         dollarFormatter.minimumFractionDigits = 2;
         dollarFormatter.maximumFractionDigits = 2;
         return dollarFormatter.stringFromNumber(price)!
+    }
+    
+    private func total() -> NSDecimalNumber {
+        if swagType == SwagType.Delivered {
+            return price.decimalNumberByAdding(shippingPrice)
+        } else {
+            return price
+        }
     }
 }
