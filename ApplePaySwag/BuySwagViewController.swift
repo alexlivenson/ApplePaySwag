@@ -10,7 +10,7 @@ import UIKit
 import PassKit
 
 class BuySwagViewController: UIViewController {
-
+    
     @IBOutlet weak var swagPriceLabel: UILabel!
     @IBOutlet weak var swagTitleLabel: UILabel!
     @IBOutlet weak var swagImage: UIImageView!
@@ -26,9 +26,9 @@ class BuySwagViewController: UIViewController {
             self.configureView()
         }
     }
-
+    
     func configureView() {
-
+        
         if (!self.isViewLoaded()) {
             return
         }
@@ -38,7 +38,7 @@ class BuySwagViewController: UIViewController {
         self.swagImage.image = swag.image
         self.swagTitleLabel.text = swag.description
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         applePayButton.hidden = !PKPaymentAuthorizationViewController.canMakePaymentsUsingNetworks(SupportedPaymentNetworks)
@@ -54,6 +54,7 @@ class BuySwagViewController: UIViewController {
         request.merchantCapabilities = PKMerchantCapability.Capability3DS // security (3DS is most popular)
         request.countryCode = "US" // currently only one available
         request.currencyCode = "USD"
+        setUpShippingFieldsDependingOnType(request)
         
         // The amount
         request.paymentSummaryItems = [
@@ -61,7 +62,19 @@ class BuySwagViewController: UIViewController {
             PKPaymentSummaryItem(label: "Razeware", amount: swag.price)
         ]
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: request)
+        applePayController.delegate = self
         self.presentViewController(applePayController, animated: true, completion: nil)
     }
+    
+    private func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
+//        request.requiredShippingAddressFields = PKAddressField.All
+        switch (swag.swagType) {
+        case SwagType.Delivered:
+            request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
+        case SwagType.Electronic:
+            request.requiredShippingAddressFields = PKAddressField.Email
+        }
+    }
+    
 }
 
