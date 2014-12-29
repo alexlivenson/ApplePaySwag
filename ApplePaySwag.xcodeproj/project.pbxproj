@@ -193,6 +193,7 @@
 					};
 					5BDACB7D19F1AC8D00630D5D = {
 						CreatedOnToolsVersion = 6.0.1;
+						DevelopmentTeam = KMHHR9G5ZL;
 						TestTargetID = 5BDACB6619F1AC8C00630D5D;
 					};
 				};
