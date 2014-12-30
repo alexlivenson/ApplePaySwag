@@ -7,10 +7,59 @@
 //
 import PassKit
 
+let applicationJson = "application/json"
+
 extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
+    
     // Handles user authorization to complete the purchase
     func paymentAuthorizationViewController(controller: PKPaymentAuthorizationViewController!, didAuthorizePayment payment: PKPayment!, completion: ((PKPaymentAuthorizationStatus) -> Void)!) {
-        PKPaymentAuthorizationStatus.Success
+        // 1
+        let shippingAddress = self.createShippingAddressFromRef(payment.shippingMethod)
+        // 2 - this key can be public -> Stripe has the secret key
+        Stripe.setDefaultPublishableKey("pk_test_Sb9vSVxY6QIujBsRNjeQF7Rk")
+        
+        // 3
+        Stripe.createTokenWithPayment(payment, completion: {
+            (token, error) -> Void in
+            
+            if error == nil {
+                println(error)
+                completion(PKPaymentAuthorizationStatus.Failure)
+                return
+            }
+            
+            // 4
+            let url = NSURL(string: "http://<your ip address>/pay")
+            let request = NSMutableURLRequest(URL: url!)
+            request.HTTPMethod = "POST"
+            request.setValue(applicationJson, forHTTPHeaderField: "Content-Ty[e")
+            request.setValue(applicationJson, forHTTPHeaderField: "Accept")
+            
+            // 5
+            let body = ["stripeToken": token.tokenId,
+                "amount": self.swag!.total().decimalNumberByMultiplyingBy(NSDecimalNumber(string: "100")),
+                "description": self.swag!.title,
+                "shipping": [
+                    "city" : shippingAddress.City!,
+                    "state": shippingAddress.State!,
+                    "zip": shippingAddress.Zip!,
+                    "firstName": shippingAddress.FirstName!,
+                    "lastName": shippingAddress.LastName!]
+            ]
+            
+            var error: NSError?
+            request.HTTPBody = NSJSONSerialization.dataWithJSONObject(body, options: NSJSONWritingOptions(), error: &error)
+            
+            // 7 
+            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {
+                (response, data, error) -> Void in
+                if error != nil {
+                    completion(PKPaymentAuthorizationStatus.Failure)
+                } else {
+                    completion(PKPaymentAuthorizationStatus.Success)
+                }
+            })
+        })
     }
     
     func paymentAuthorizationViewControllerDidFinish(controller: PKPaymentAuthorizationViewController!) {
@@ -33,7 +82,7 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
         // This works due to the method setUpShippingFieldsDependingOnType which maps values from PKShippingMethod to ShippingMethod
         let swagShippingMethod = ShippingMethod.ShippingMethodOptions.filter { (method) in
             method.title == shippingMethod.identifier
-        }.first!
+            }.first!
         
         swag.swagType = SwagType.Delivered(method: swagShippingMethod)
         completion(PKPaymentAuthorizationStatus.Success, calculateSummaryItemsFromSwag(swag))
