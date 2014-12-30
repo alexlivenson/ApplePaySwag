@@ -57,15 +57,17 @@ class BuySwagViewController: UIViewController {
         setUpShippingFieldsDependingOnType(request)
         
         // The amount
-        request.paymentSummaryItems = calculateAndGetSummaryItems()
+        request.paymentSummaryItems = calculateSummaryItemsFromSwag(swag)
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: request)
         
         applePayController.delegate = self
         self.presentViewController(applePayController, animated: true, completion: nil)
     }
     
-    private func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
-        //        request.requiredShippingAddressFields = PKAddressField.All
+    func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
+
+        // This will create options in the apple pay sheet that will let you choose shipping
+        // As well as give the shipping info depending on type
         switch (swag.swagType) {
         case SwagType.Delivered(let type):
             var shippingMethods = [PKShippingMethod]()
@@ -76,19 +78,14 @@ class BuySwagViewController: UIViewController {
                 method.detail = shippingMethod.description
                 shippingMethods.append(method)
             }
-            
             request.shippingMethods = shippingMethods
+            request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
         case SwagType.Electronic:
-            break
+            request.requiredShippingAddressFields = PKAddressField.Email
         }
-//        case SwagType.Delivered:
-//            request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
-//        case SwagType.Electronic:
-//            request.requiredShippingAddressFields = PKAddressField.Email
-//        }
     }
     
-    private func calculateAndGetSummaryItems() -> [PKPaymentSummaryItem]{
+    func calculateSummaryItemsFromSwag(swag: Swag) -> [PKPaymentSummaryItem]{
         var summaryItems = [PKPaymentSummaryItem]()
         summaryItems.append(PKPaymentSummaryItem(label: swag.title, amount: swag.price))
         
@@ -99,20 +96,21 @@ class BuySwagViewController: UIViewController {
             break
         }
         
-        summaryItems.append(PKPaymentSummaryItem(label: "Razeware", amount: swag.price))
+        summaryItems.append(PKPaymentSummaryItem(label: "Razeware", amount: swag.total()))
         return summaryItems
     }
     
     // TODO: Investigate AddressBook
+    // Lots of intricit detials in this method with ABRecord
     // NOTE: Method is public so to be accessible to extensions
     func createShippingAddressFromRef(address: ABRecord!) -> Address {
         var shippingAddress: Address = Address()
-        shippingAddress.FirstName = ABRecordCopyValue(address, kABPersonFirstNameProperty).takeRetainedValue() as? String
-        shippingAddress.LastName = ABRecordCopyValue(address, kABPersonLastNameProperty).takeRetainedValue() as? String
+        shippingAddress.FirstName = ABRecordCopyValue(address, kABPersonFirstNameProperty)?.takeRetainedValue() as? String
+        shippingAddress.LastName = ABRecordCopyValue(address, kABPersonLastNameProperty)?.takeRetainedValue() as? String
         
         let addressProperty: ABMultiValueRef = ABRecordCopyValue(address, kABPersonAddressProperty).takeUnretainedValue() as ABMultiValueRef
         
-        if let dict:NSDictionary = ABMultiValueCopyValueAtIndex(address, 0).takeUnretainedValue() as? NSDictionary {
+        if let dict:NSDictionary = ABMultiValueCopyValueAtIndex(addressProperty, 0).takeUnretainedValue() as? NSDictionary {
             shippingAddress.Street = dict[String(kABPersonAddressStreetKey)] as? String
             shippingAddress.City = dict[String(kABPersonAddressCityKey)] as? String
             shippingAddress.State = dict[String(kABPersonAddressStateKey)] as? String
@@ -121,8 +119,5 @@ class BuySwagViewController: UIViewController {
         
         return shippingAddress
     }
-    
-    
-    
 }
 

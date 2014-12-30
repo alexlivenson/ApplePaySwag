@@ -29,4 +29,14 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
         }
     }
     
+    func paymentAuthorizationViewController(controller: PKPaymentAuthorizationViewController!, didSelectShippingMethod shippingMethod: PKShippingMethod!, completion: ((PKPaymentAuthorizationStatus, [AnyObject]!) -> Void)!) {
+        // This works due to the method setUpShippingFieldsDependingOnType which maps values from PKShippingMethod to ShippingMethod
+        let swagShippingMethod = ShippingMethod.ShippingMethodOptions.filter { (method) in
+            method.title == shippingMethod.identifier
+        }.first!
+        
+        swag.swagType = SwagType.Delivered(method: swagShippingMethod)
+        completion(PKPaymentAuthorizationStatus.Success, calculateSummaryItemsFromSwag(swag))
+    }
+    
 }

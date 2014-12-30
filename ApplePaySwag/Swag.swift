@@ -65,7 +65,7 @@ struct Swag {
         return dollarFormatter.stringFromNumber(price)!
     }
     
-    private func total() -> NSDecimalNumber {
+    func total() -> NSDecimalNumber {
         switch(swagType) {
         case .Delivered(let swagType):
             return price.decimalNumberByAdding(swagType.method.price)
