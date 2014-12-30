@@ -26,19 +26,19 @@ class SwagListViewController: UITableViewController {
         Swag(   image: UIImage(named: "RW_button_pack"),
                 title: "Button Pack",
                 price: 9.99,
-                type: SwagType.Delivered,
+                type: SwagType.Delivered(method: ShippingMethod.ShippingMethodOptions.first!),
                 description: "A pack of Ray Wenderlich buttons!."),
 
         Swag(   image: UIImage(named: "RW-Sticker"),
                 title: "Sticker",
                 price: 2.99,
-                type: SwagType.Delivered,
+                type: SwagType.Delivered(method: ShippingMethod.ShippingMethodOptions.first!),
                 description: "A really cool sticker!"),
         
         Swag(   image: UIImage(named: "rw-t-shirt"),
                 title: "T-Shirt",
                 price: 14.99,
-                type: SwagType.Delivered,
+                type: SwagType.Delivered(method: ShippingMethod.ShippingMethodOptions.first!),
                 description: "Sport a stylish black t-shirt with a colorful mosaic iPhone design!"),
     ]
 

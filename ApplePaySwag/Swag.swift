@@ -9,9 +9,27 @@
 import UIKit
 
 enum SwagType {
-    case Delivered
+    case Delivered(method: ShippingMethod)
     case Electronic
     
+}
+
+struct ShippingMethod {
+    let price: NSDecimalNumber
+    let title: String
+    let description: String
+    
+    init(price: NSDecimalNumber, title: String, description: String) {
+        self.price = price
+        self.title = title
+        self.description = description
+    }
+    
+    static let ShippingMethodOptions = [
+        ShippingMethod(price: NSDecimalNumber(string: "5.00"), title: "Carrier Pigeon", description: "You may get it someday"),
+        ShippingMethod(price: NSDecimalNumber(string: "100.0"), title: "Racecar", description: "Vrrrom! Get it soon"),
+        ShippingMethod(price: NSDecimalNumber(string: "90000.00"), title: "Rocket Ship", description: "Look outside")
+    ]
 }
 
 func ==(lhs: SwagType, rhs: SwagType) -> Bool {
@@ -48,9 +66,10 @@ struct Swag {
     }
     
     private func total() -> NSDecimalNumber {
-        if swagType == SwagType.Delivered {
-            return price.decimalNumberByAdding(shippingPrice)
-        } else {
+        switch(swagType) {
+        case .Delivered(let swagType):
+            return price.decimalNumberByAdding(swagType.method.price)
+        case .Electronic:
             return price
         }
     }

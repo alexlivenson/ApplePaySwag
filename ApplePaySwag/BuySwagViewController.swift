@@ -67,25 +67,45 @@ class BuySwagViewController: UIViewController {
     private func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
         //        request.requiredShippingAddressFields = PKAddressField.All
         switch (swag.swagType) {
-        case SwagType.Delivered:
-            request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
+        case SwagType.Delivered(let type):
+            var shippingMethods = [PKShippingMethod]()
+            
+            for shippingMethod in ShippingMethod.ShippingMethodOptions {
+                let method = PKShippingMethod(label: shippingMethod.title, amount: shippingMethod.price)
+                method.identifier = shippingMethod.title
+                method.detail = shippingMethod.description
+                shippingMethods.append(method)
+            }
+            
+            request.shippingMethods = shippingMethods
         case SwagType.Electronic:
-            request.requiredShippingAddressFields = PKAddressField.Email
+            break
         }
+//        case SwagType.Delivered:
+//            request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
+//        case SwagType.Electronic:
+//            request.requiredShippingAddressFields = PKAddressField.Email
+//        }
     }
     
     private func calculateAndGetSummaryItems() -> [PKPaymentSummaryItem]{
         var summaryItems = [PKPaymentSummaryItem]()
         summaryItems.append(PKPaymentSummaryItem(label: swag.title, amount: swag.price))
-        if swag.swagType == .Delivered {
-            summaryItems.append(PKPaymentSummaryItem(label: "Shipping", amount: swag.shippingPrice))
+        
+        switch (swag.swagType) {
+        case .Delivered(let swagType):
+            summaryItems.append(PKPaymentSummaryItem(label: "Shipping", amount: swagType.method.price))
+        case .Electronic:
+            break
         }
+        
         summaryItems.append(PKPaymentSummaryItem(label: "Razeware", amount: swag.price))
         return summaryItems
     }
     
     // TODO: Investigate AddressBook
-    private func createShippingAddressFromRef(address: ABRecord!) -> Address {
+    // NOTE: Method is public so to be accessible to extensions
+    func createShippingAddressFromRef(address: ABRecord!) -> Address {
         var shippingAddress: Address = Address()
         shippingAddress.FirstName = ABRecordCopyValue(address, kABPersonFirstNameProperty).takeRetainedValue() as? String
         shippingAddress.LastName = ABRecordCopyValue(address, kABPersonLastNameProperty).takeRetainedValue() as? String

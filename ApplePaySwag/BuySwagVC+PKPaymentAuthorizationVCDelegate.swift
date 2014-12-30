@@ -19,7 +19,14 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
     
     // lets long running tasks comlpete due to address or shipping changes made on the apple pay sheet (i.e calcuate sales tax)
     func paymentAuthorizationViewController(controller: PKPaymentAuthorizationViewController!, didSelectShippingAddress address: ABRecord!, completion: ((status:PKPaymentAuthorizationStatus, shippindMethods:[AnyObject]!, summaryItems:[AnyObject]!) -> Void)!) {
-        completion(status: PKPaymentAuthorizationStatus.Success, shippindMethods: nil, summaryItems: nil)
+        let shippingAddress = createShippingAddressFromRef(address)
+        
+        switch(shippingAddress.State, shippingAddress.City, shippingAddress.Zip) {
+        case(.Some(let state), .Some(let city), .Some(let zip)):
+            completion(status: PKPaymentAuthorizationStatus.Success, shippindMethods: nil, summaryItems: nil)
+        default:
+            completion(status: PKPaymentAuthorizationStatus.InvalidShippingPostalAddress, shippindMethods: nil, summaryItems: nil)
+        }
     }
     
 }
