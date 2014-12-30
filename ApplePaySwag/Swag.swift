@@ -24,14 +24,14 @@ func ==(lhs: SwagType, rhs: SwagType) -> Bool {
     }
 }
 
-let shippingPrice: NSDecimalNumber = NSDecimalNumber(string: "5.0")
 struct Swag {
     let image: UIImage?
     let title: String
     let price: NSDecimalNumber
     let description: String
+    let shippingPrice: NSDecimalNumber = NSDecimalNumber(string: "5.0")
     var swagType: SwagType
-    
+    	
     init(image: UIImage?, title: String, price: NSDecimalNumber, type: SwagType, description: String) {
         self.image = image
         self.title = title

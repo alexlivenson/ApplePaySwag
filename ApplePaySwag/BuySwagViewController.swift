@@ -57,23 +57,49 @@ class BuySwagViewController: UIViewController {
         setUpShippingFieldsDependingOnType(request)
         
         // The amount
-        request.paymentSummaryItems = [
-            PKPaymentSummaryItem(label: swag.title, amount: swag.price),
-            PKPaymentSummaryItem(label: "Razeware", amount: swag.price)
-        ]
+        request.paymentSummaryItems = calculateAndGetSummaryItems()
         let applePayController = PKPaymentAuthorizationViewController(paymentRequest: request)
+        
         applePayController.delegate = self
         self.presentViewController(applePayController, animated: true, completion: nil)
     }
     
     private func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
-//        request.requiredShippingAddressFields = PKAddressField.All
+        //        request.requiredShippingAddressFields = PKAddressField.All
         switch (swag.swagType) {
         case SwagType.Delivered:
             request.requiredShippingAddressFields = PKAddressField.PostalAddress | PKAddressField.Phone
         case SwagType.Electronic:
             request.requiredShippingAddressFields = PKAddressField.Email
         }
+    }
+    
+    private func calculateAndGetSummaryItems() -> [PKPaymentSummaryItem]{
+        var summaryItems = [PKPaymentSummaryItem]()
+        summaryItems.append(PKPaymentSummaryItem(label: swag.title, amount: swag.price))
+        if swag.swagType == .Delivered {
+            summaryItems.append(PKPaymentSummaryItem(label: "Shipping", amount: swag.shippingPrice))
+        }
+        summaryItems.append(PKPaymentSummaryItem(label: "Razeware", amount: swag.price))
+        return summaryItems
+    }
+    
+    // TODO: Investigate AddressBook
+    private func createShippingAddressFromRef(address: ABRecord!) -> Address {
+        var shippingAddress: Address = Address()
+        shippingAddress.FirstName = ABRecordCopyValue(address, kABPersonFirstNameProperty).takeRetainedValue() as? String
+        shippingAddress.LastName = ABRecordCopyValue(address, kABPersonLastNameProperty).takeRetainedValue() as? String
+        
+        let addressProperty: ABMultiValueRef = ABRecordCopyValue(address, kABPersonAddressProperty).takeUnretainedValue() as ABMultiValueRef
+        
+        if let dict:NSDictionary = ABMultiValueCopyValueAtIndex(address, 0).takeUnretainedValue() as? NSDictionary {
+            shippingAddress.Street = dict[String(kABPersonAddressStreetKey)] as? String
+            shippingAddress.City = dict[String(kABPersonAddressCityKey)] as? String
+            shippingAddress.State = dict[String(kABPersonAddressStateKey)] as? String
+            shippingAddress.Zip = dict[String(kABPersonAddressZIPKey)] as? String
+        }
+        
+        return shippingAddress
     }
     
     

@@ -17,6 +17,7 @@
 		5BDACB7919F1AC8D00630D5D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5BDACB7719F1AC8D00630D5D /* LaunchScreen.xib */; };
 		5BDACB8519F1AC8D00630D5D /* ApplePaySwagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BDACB8419F1AC8D00630D5D /* ApplePaySwagTests.swift */; };
 		CEAFFDA71A51291C00FFE7FD /* BuySwagVC+PKPaymentAuthorizationVCDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAFFDA61A51291C00FFE7FD /* BuySwagVC+PKPaymentAuthorizationVCDelegate.swift */; };
+		CEF3E4AA1A522DF10011CB05 /* Address.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF3E4A91A522DF10011CB05 /* Address.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		5BDACB8419F1AC8D00630D5D /* ApplePaySwagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePaySwagTests.swift; sourceTree = "<group>"; };
 		CEAFFDA51A50F7C500FFE7FD /* ApplePaySwag.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ApplePaySwag.entitlements; sourceTree = "<group>"; };
 		CEAFFDA61A51291C00FFE7FD /* BuySwagVC+PKPaymentAuthorizationVCDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BuySwagVC+PKPaymentAuthorizationVCDelegate.swift"; sourceTree = "<group>"; };
+		CEF3E4A91A522DF10011CB05 /* Address.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Address.swift; sourceTree = "<group>"; };
 		D0BEB0E73BFE224F4D3C057C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -109,6 +111,7 @@
 				5BBCC39B19F7421E00412D16 /* Swag.swift */,
 				5B4D9BC819FF3EE4008FB471 /* SwagCell.swift */,
 				5B9C40791A009BEA00F9576C /* ApplePaySwag-Bridging-Header.h */,
+				CEF3E4A91A522DF10011CB05 /* Address.swift */,
 			);
 			path = ApplePaySwag;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				5BDACB6D19F1AC8D00630D5D /* AppDelegate.swift in Sources */,
 				5BBCC39C19F7421E00412D16 /* Swag.swift in Sources */,
 				5B4D9BC919FF3EE4008FB471 /* SwagCell.swift in Sources */,
+				CEF3E4AA1A522DF10011CB05 /* Address.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
