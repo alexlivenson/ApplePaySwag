@@ -4,6 +4,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
 pod 'Stripe/ApplePay'
+pod 'ApplePayStubs'
 #target 'ApplePaySwag' do
 #
 #end

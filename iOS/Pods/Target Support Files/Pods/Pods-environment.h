@@ -6,6 +6,12 @@
 // project.
 
 
+// ApplePayStubs
+#define COCOAPODS_POD_AVAILABLE_ApplePayStubs
+#define COCOAPODS_VERSION_MAJOR_ApplePayStubs 0
+#define COCOAPODS_VERSION_MINOR_ApplePayStubs 1
+#define COCOAPODS_VERSION_PATCH_ApplePayStubs 2
+
 // Stripe/ApplePay
 #define COCOAPODS_POD_AVAILABLE_Stripe_ApplePay
 #define COCOAPODS_VERSION_MAJOR_Stripe_ApplePay 2
