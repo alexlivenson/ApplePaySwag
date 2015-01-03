@@ -22,14 +22,14 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
         Stripe.createTokenWithPayment(payment, completion: {
             (token, error) -> Void in
             
-            if error == nil {
+            if error != nil {
                 println(error)
                 completion(PKPaymentAuthorizationStatus.Failure)
                 return
             }
             
             // 4
-            let url = NSURL(string: "http://<your ip address>/pay")
+            let url = NSURL(string: "http:<your-ip-address>/pay")
             let request = NSMutableURLRequest(URL: url!)
             request.HTTPMethod = "POST"
             request.setValue(applicationJson, forHTTPHeaderField: "Content-Ty[e")
@@ -50,13 +50,13 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
             var error: NSError?
             request.HTTPBody = NSJSONSerialization.dataWithJSONObject(body, options: NSJSONWritingOptions(), error: &error)
             
-            // 7 
+            // 7
             NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {
                 (response, data, error) -> Void in
                 if error != nil {
-                    completion(PKPaymentAuthorizationStatus.Failure)
-                } else {
                     completion(PKPaymentAuthorizationStatus.Success)
+                } else {
+                    completion(PKPaymentAuthorizationStatus.Failure)
                 }
             })
         })
