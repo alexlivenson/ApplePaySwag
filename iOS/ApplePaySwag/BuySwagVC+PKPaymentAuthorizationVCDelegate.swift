@@ -29,13 +29,15 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
             }
             
             // 4
-            let url = NSURL(string: "http:<your-ip-address>/pay")
+            let shippingAddress = self.createShippingAddressFromRef(payment.shippingAddress)
+            
+            // 5
+            let url = NSURL(string: "<your-ip-address>/pay")
             let request = NSMutableURLRequest(URL: url!)
             request.HTTPMethod = "POST"
             request.setValue(applicationJson, forHTTPHeaderField: "Content-Ty[e")
             request.setValue(applicationJson, forHTTPHeaderField: "Accept")
             
-            // 5
             let body = ["stripeToken": token.tokenId,
                 "amount": self.swag!.total().decimalNumberByMultiplyingBy(NSDecimalNumber(string: "100")),
                 "description": self.swag!.title,
@@ -88,4 +90,23 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
         completion(PKPaymentAuthorizationStatus.Success, calculateSummaryItemsFromSwag(swag))
     }
     
+    // TODO: Investigate AddressBook
+    // Lots of intricit detials in this method with ABRecord
+    // NOTE: Method is public so to be accessible to extensions
+    func createShippingAddressFromRef(address: ABRecord!) -> Address {
+        var shippingAddress: Address = Address()
+        shippingAddress.FirstName = ABRecordCopyValue(address, kABPersonFirstNameProperty)?.takeRetainedValue() as? String
+        shippingAddress.LastName = ABRecordCopyValue(address, kABPersonLastNameProperty)?.takeRetainedValue() as? String
+        
+        let addressProperty: ABMultiValueRef = ABRecordCopyValue(address, kABPersonAddressProperty).takeUnretainedValue() as ABMultiValueRef
+        
+        if let dict:NSDictionary = ABMultiValueCopyValueAtIndex(addressProperty, 0).takeUnretainedValue() as? NSDictionary {
+            shippingAddress.Street = dict[String(kABPersonAddressStreetKey)] as? String
+            shippingAddress.City = dict[String(kABPersonAddressCityKey)] as? String
+            shippingAddress.State = dict[String(kABPersonAddressStateKey)] as? String
+            shippingAddress.Zip = dict[String(kABPersonAddressZIPKey)] as? String
+        }
+        
+        return shippingAddress
+    }
 }
