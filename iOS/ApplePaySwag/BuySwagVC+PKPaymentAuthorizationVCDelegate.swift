@@ -14,9 +14,9 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
     // Handles user authorization to complete the purchase
     func paymentAuthorizationViewController(controller: PKPaymentAuthorizationViewController!, didAuthorizePayment payment: PKPayment!, completion: ((PKPaymentAuthorizationStatus) -> Void)!) {
         // 1
-        let shippingAddress = self.createShippingAddressFromRef(payment.shippingMethod)
+//        let shippingAddress = self.createShippingAddressFromRef(payment.shippingMethod)
         // 2 - this key can be public -> Stripe has the secret key
-        Stripe.setDefaultPublishableKey("pk_test_Sb9vSVxY6QIujBsRNjeQF7Rk")
+        Stripe.setDefaultPublishableKey("<your-public-key>")
         
         // 3
         Stripe.createTokenWithPayment(payment, completion: {
@@ -32,7 +32,7 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
             let shippingAddress = self.createShippingAddressFromRef(payment.shippingAddress)
             
             // 5
-            let url = NSURL(string: "<your-ip-address>/pay")
+            let url = NSURL(string: "http://<your-ip-address>/pay")
             let request = NSMutableURLRequest(URL: url!)
             request.HTTPMethod = "POST"
             request.setValue(applicationJson, forHTTPHeaderField: "Content-Ty[e")
@@ -56,9 +56,9 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
             NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {
                 (response, data, error) -> Void in
                 if error != nil {
-                    completion(PKPaymentAuthorizationStatus.Success)
-                } else {
                     completion(PKPaymentAuthorizationStatus.Failure)
+                } else {
+                    completion(PKPaymentAuthorizationStatus.Success)
                 }
             })
         })
