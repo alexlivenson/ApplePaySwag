@@ -8,3 +8,4 @@
 
 #import <Stripe/Stripe.h>
 #import <Stripe/Stripe+ApplePay.h>
+#import <ApplePayStubs/STPTestPaymentAuthorizationViewController.h>

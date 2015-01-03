@@ -14,7 +14,7 @@ extension BuySwagViewController: PKPaymentAuthorizationViewControllerDelegate {
     // Handles user authorization to complete the purchase
     func paymentAuthorizationViewController(controller: PKPaymentAuthorizationViewController!, didAuthorizePayment payment: PKPayment!, completion: ((PKPaymentAuthorizationStatus) -> Void)!) {
         // 1
-//        let shippingAddress = self.createShippingAddressFromRef(payment.shippingMethod)
+        let shippingAddress = self.createShippingAddressFromRef(payment.shippingMethod)
         // 2 - this key can be public -> Stripe has the secret key
         Stripe.setDefaultPublishableKey("<your-public-key>")
         

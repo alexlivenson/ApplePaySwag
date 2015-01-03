@@ -58,14 +58,20 @@ class BuySwagViewController: UIViewController {
         
         // The amount
         request.paymentSummaryItems = calculateSummaryItemsFromSwag(swag)
-        let applePayController = PKPaymentAuthorizationViewController(paymentRequest: request)
         
-        applePayController.delegate = self
+        #if DEBUG
+            let applePayController = STPTestPaymentAuthorizationViewController(paymentRequest: request)
+            applePayController.delegate = self
+        #else
+            let applePayController = PKPaymentAuthorizationViewController(paymentRequest: request)
+            applePayController.delegate = self
+        #endif
+        
         self.presentViewController(applePayController, animated: true, completion: nil)
     }
     
     func setUpShippingFieldsDependingOnType(request:PKPaymentRequest) {
-
+        
         // This will create options in the apple pay sheet that will let you choose shipping
         // As well as give the shipping info depending on type
         switch (swag.swagType) {

@@ -382,6 +382,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -508,7 +509,7 @@
 				5BDACB8719F1AC8D00630D5D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		5BDACB8819F1AC8D00630D5D /* Build configuration list for PBXNativeTarget "ApplePaySwag" */ = {
 			isa = XCConfigurationList;
@@ -517,7 +518,7 @@
 				5BDACB8A19F1AC8D00630D5D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		5BDACB8B19F1AC8D00630D5D /* Build configuration list for PBXNativeTarget "ApplePaySwagTests" */ = {
 			isa = XCConfigurationList;
@@ -526,7 +527,7 @@
 				5BDACB8D19F1AC8D00630D5D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
